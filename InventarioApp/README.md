@@ -99,9 +99,12 @@ Ingrese la categoría del producto: Electrónica
 ```
 
 ### Consultar productos
+
+```
 === Consultar productos ===
 ID: P001, Nombre: Leche, Precio: $2.50, Cantidad: 10, Expira en: 31/12/2025
 ID: NP001, Nombre: Arroz, Precio: $3.75, Cantidad: 50, Categoría: Alimentos básicos
+```
 
 ### Generar reporte de stock bajo
 === Reporte de stock bajo ===
