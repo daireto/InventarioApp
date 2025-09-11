@@ -3,7 +3,7 @@ using InventarioApp.src.Domain.Entities;
 
 namespace InventarioApp.src.Application.Services
 {
-    class ReportService : IReportService
+    public class ReportService : IReportService
     {
         private readonly IRepository<Product> _repository;
 
@@ -24,7 +24,7 @@ namespace InventarioApp.src.Application.Services
             string report = $"\nProductos con stock menor a {threshold}:\n\n";
             foreach (var product in lowStockProducts)
             {
-                report += $" - {product.GetNameAndStock()})\n";
+                report += $" - {product.GetNameAndStock()}\n";
             }
             return report;
         }
