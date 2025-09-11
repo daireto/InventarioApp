@@ -44,7 +44,7 @@ namespace InventarioApp.src.Infrastructure.Repositories
 
             int index = _items.FindIndex(i => i.Id == id);
             if (index < 0)
-                throw new KeyNotFoundException($"Item with ID {id} was not found.");
+                throw new KeyNotFoundException($"Recurso con ID {id} no encontrado. ");
 
             _items.RemoveAt(index);
         }
