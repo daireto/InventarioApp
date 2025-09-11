@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace InventarioApp.src.Infrastructure.Repositories
 {
-    class JsonRepository<T> : IRepository<T> where T : BaseEntity
+    public class JsonRepository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly string _filePath;
         private List<T> _items;
@@ -84,7 +84,7 @@ namespace InventarioApp.src.Infrastructure.Repositories
 
             int index = _items.FindIndex(i => i.Id == id);
             if (index < 0)
-                throw new KeyNotFoundException($"Recurso con ID {id} no encontrado.");
+                throw new KeyNotFoundException($"Recurso con ID {id} no encontrado");
 
             _items.RemoveAt(index);
             SaveChanges();

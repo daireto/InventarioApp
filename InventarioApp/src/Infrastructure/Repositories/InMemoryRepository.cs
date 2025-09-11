@@ -3,7 +3,7 @@ using InventarioApp.src.Domain.Interfaces;
 
 namespace InventarioApp.src.Infrastructure.Repositories
 {
-    class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
+    public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
     {
         private List<T> _items;
 
@@ -44,7 +44,7 @@ namespace InventarioApp.src.Infrastructure.Repositories
 
             int index = _items.FindIndex(i => i.Id == id);
             if (index < 0)
-                throw new KeyNotFoundException($"Recurso con ID {id} no encontrado. ");
+                throw new KeyNotFoundException($"Recurso con ID {id} no encontrado");
 
             _items.RemoveAt(index);
         }
