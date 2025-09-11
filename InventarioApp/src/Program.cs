@@ -9,6 +9,7 @@ namespace InventarioApp.src
     {
         private static InventoryService _inventoryService;
         private static ReportService _reportService;
+        private static CSVExportService _csvExportService;
 
         static void Main(string[] args)
         {
@@ -18,9 +19,10 @@ namespace InventarioApp.src
 
         static void InitializeServices()
         {
-            IRepository<Product> productRepository = new JsonRepository<Product>("C:\\temp\\inventory.json");
+            IRepository<Product> productRepository = new JsonRepository<Product>("C:\\temp\\inventario.json");
             _inventoryService = new InventoryService(productRepository);
             _reportService = new ReportService(productRepository);
+            _csvExportService = new CSVExportService();
         }
 
         static void ShowMenu()
@@ -37,9 +39,10 @@ namespace InventarioApp.src
                 Console.WriteLine("4. Eliminar producto");
                 Console.WriteLine("5. Reporte de stock bajo");
                 Console.WriteLine("6. Buscar productos por nombre");
-                Console.WriteLine("7. Exit");
+                Console.WriteLine("7. Exportar productos a CSV");
+                Console.WriteLine("8. Salir");
                 Console.WriteLine("=======================================");
-                Console.Write("Ingrese la opción (1-7): ");
+                Console.Write("Ingrese la opción (1-8): ");
 
                 if (int.TryParse(Console.ReadLine(), out int choice))
                 {
@@ -68,6 +71,9 @@ namespace InventarioApp.src
                                 FindProductsByName();
                                 break;
                             case 7:
+                                ExportProductsToCSV();
+                                break;
+                            case 8:
                                 exit = true;
                                 break;
                             default:
@@ -126,7 +132,7 @@ namespace InventarioApp.src
             switch (typeChoice)
             {
                 case 1:
-                    Console.Write("Ingrese la fecha de expiración (yyyy-MM-dd): ");
+                    Console.Write("Ingrese la fecha de expiración (aaaa-MM-dd): ");
                     DateTime expirationDate = DateTime.Parse(Console.ReadLine() ?? DateTime.Now.ToString("yyyy-MM-dd"));
                     product = new PerishableProduct(id, name, description, price, quantity, expirationDate);
                     break;
@@ -164,7 +170,7 @@ namespace InventarioApp.src
         static void UpdateProductStock()
         {
             Console.WriteLine("=== Actualizar stock de un producto ===");
-            Console.Write("Igrese el ID del producto: ");
+            Console.Write("Ingrese el ID del producto: ");
             string id = Console.ReadLine() ?? "";
 
             Console.Write("Ingrese el nuevo stock disponible del producto: ");
@@ -179,7 +185,7 @@ namespace InventarioApp.src
             Console.WriteLine("=== Eliminar producto ===");
             Console.Write("Ingrese el ID del producto: ");
             string id = Console.ReadLine() ?? "";
-            
+
             _inventoryService.DeleteProduct(id);
             Console.WriteLine("\nProducto eliminado exitosamente!");
         }
@@ -212,6 +218,23 @@ namespace InventarioApp.src
             {
                 Console.WriteLine("\n" + product.GetDisplayInfo());
             }
+        }
+
+        static void ExportProductsToCSV()
+        {
+            Console.WriteLine("=== Exportar productos a CSV ===");
+            Console.Write("Ingrese la ruta del archivo CSV de salida: ");
+            string filePath = Console.ReadLine() ?? "";
+
+            var products = _inventoryService.ListProducts();
+            if (!products.Any())
+            {
+                Console.WriteLine("\nNo se encontraron productos para exportar.");
+                return;
+            }
+
+            _csvExportService.ExportProducts(products, filePath);
+            Console.WriteLine("\nProductos exportados exitosamente!");
         }
     }
 }
