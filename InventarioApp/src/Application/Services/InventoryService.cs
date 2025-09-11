@@ -22,7 +22,7 @@ namespace InventarioApp.src.Application.Services
             var product = _repository.GetById(id);
             if (product == null)
                 throw new KeyNotFoundException($"Producto con ID {id} no encontrado");
-            
+
             product.Rename(name);
             product.UpdateDescription(description);
             product.UpdatePrice(price);

@@ -66,6 +66,16 @@
         {
             return $"ID: {Id}, Nombre: {Name}, Precio: ${Price:C}, Cantidad: {Quantity}";
         }
+
+        public virtual string GetNameAndStock()
+        {
+            return $"{Name} (Cantidad: {Quantity})";
+        }
+
+        public virtual string GetCSVLine()
+        {
+            return $"{Id},{Name},{Description},{Price},{Quantity},Genérico";
+        }
     }
 
     public sealed class PerishableProduct : Product
@@ -84,6 +94,16 @@
         {
             return $"{base.GetDisplayInfo()}, Expira en: {ExpirationDate.ToShortDateString()}";
         }
+
+        public override string GetNameAndStock()
+        {
+            return $"{Name} (Perecedero) (Cantidad: {Quantity})";
+        }
+
+        public override string GetCSVLine()
+        {
+            return $"{Id},{Name},{Description},{Price},{Quantity},Perecedero";
+        }
     }
 
     public sealed class NonPerishableProduct : Product
@@ -100,6 +120,16 @@
         public override string GetDisplayInfo()
         {
             return $"{base.GetDisplayInfo()}, Categoría: {Category}";
+        }
+
+        public override string GetNameAndStock()
+        {
+            return $"{Name} (No perecedero) (Cantidad: {Quantity})";
+        }
+
+        public override string GetCSVLine()
+        {
+            return $"{Id},{Name},{Description},{Price},{Quantity},No perecedero";
         }
     }
 }
