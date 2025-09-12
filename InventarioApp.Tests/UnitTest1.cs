@@ -2,13 +2,12 @@
 using InventarioApp.src.Domain.Entities;
 using InventarioApp.src.Domain.Interfaces;
 using InventarioApp.src.Infrastructure.Repositories;
-using Xunit;
 
 namespace InventarioApp.Tests;
 
-public class UseCaseTests
+public class UnitTest1
 {
-    private readonly IRepository<Product> _repository = new JsonRepository<Product>("C:\\temp\\test-inventory.json");
+    private readonly IRepository<Product> _repository = new InMemoryRepository<Product>();
 
     [Fact]
     public void AddProduct_ShouldAddProductToInventory()
