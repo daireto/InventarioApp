@@ -4,39 +4,40 @@ using System.Text.Json;
 
 namespace InventarioApp.src.Infrastructure.Repositories
 {
-    public class JsonRepository<T> : IRepository<T> where T : BaseEntity
+    public class ProductJsonRepository<T> : IRepository<T> where T : Product
     {
         private readonly string _filePath;
         private List<T> _items;
-        private JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true,
-        };
+        private JsonSerializerOptions _jsonSerializerOptions;
 
-        public JsonRepository(string filePath)
+        public ProductJsonRepository(string filePath)
         {
             _filePath = filePath;
-            Load();
+            _jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true,
+            };
+            _jsonSerializerOptions.Converters.Add(new ProductJsonConverter());
+
+            _items = Load();
         }
 
-        public void Load()
+        public List<T> Load()
         {
             if (!File.Exists(_filePath))
             {
-                _items = [];
-                return;
+                return [];
             }
 
             string jsonString = File.ReadAllText(_filePath);
             if (string.IsNullOrWhiteSpace(jsonString))
             {
-                _items = [];
-                return;
+                return [];
             }
 
-            var loadedItems = JsonSerializer.Deserialize<List<T>>(jsonString, _jsonSerializerOptions);
-            _items = loadedItems ?? [];
+            var loadedItems = JsonSerializer.Deserialize<List<Product>>(jsonString, _jsonSerializerOptions);
+            return loadedItems?.Cast<T>().ToList() ?? [];
         }
 
         public void SaveChanges()
@@ -50,6 +51,7 @@ namespace InventarioApp.src.Infrastructure.Repositories
             string jsonString = JsonSerializer.Serialize(_items, _jsonSerializerOptions);
             File.WriteAllText(_filePath, jsonString);
         }
+
         public void Add(T item)
         {
             var itemId = item.Id.ToString();
