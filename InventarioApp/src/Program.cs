@@ -19,7 +19,7 @@ namespace InventarioApp.src
 
         static void InitializeServices()
         {
-            IRepository<Product> productRepository = new JsonRepository<Product>("C:\\temp\\inventario.json");
+            IRepository<Product> productRepository = new ProductJsonRepository<Product>("C:\\temp\\inventario.json");
             _inventoryService = new InventoryService(productRepository);
             _reportService = new ReportService(productRepository);
             _csvExportService = new CSVExportService();
@@ -83,7 +83,7 @@ namespace InventarioApp.src
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                        Console.WriteLine($"\n{ex.Message}");
                     }
 
                     if (!exit)
@@ -108,37 +108,25 @@ namespace InventarioApp.src
             Console.WriteLine("Seleccione el tipo de producto:");
             Console.WriteLine("1. Perecedero (por defecto)");
             Console.WriteLine("2. No perecedero");
-            Console.Write("Ingrese la opción (1 o 2): ");
-
-            int typeChoice = int.Parse(Console.ReadLine() ?? "1");
-
-            Console.Write("Ingrese el ID del producto: ");
-            string id = Console.ReadLine() ?? "";
-
-            Console.Write("Ingrese el nombre del producto: ");
-            string name = Console.ReadLine() ?? "";
-
-            Console.Write("Ingrese la descripción del producto: ");
-            string description = Console.ReadLine() ?? "";
-
-            Console.Write("Ingrese el precio del producto: ");
-            decimal price = decimal.Parse(Console.ReadLine() ?? "0");
-
-            Console.Write("Ingrese el stock disponible del producto: ");
-            int quantity = int.Parse(Console.ReadLine() ?? "0");
+            int typeChoice = ReadInt("Ingrese la opción (1 o 2): ", 1);
+            
+            string id = ReadLine("Ingrese el ID del producto: ");
+            string name = ReadLine("Ingrese el nombre del producto: ");
+            string description = ReadLine("Ingrese la descripción del producto: ");
+            decimal price = ReadDecimal("Ingrese el precio del producto: ");
+            int quantity = ReadInt("Ingrese el stock disponible del producto: ");
 
             Product product;
 
             switch (typeChoice)
             {
                 case 1:
-                    Console.Write("Ingrese la fecha de expiración (aaaa-MM-dd): ");
-                    DateTime expirationDate = DateTime.Parse(Console.ReadLine() ?? DateTime.Now.ToString("yyyy-MM-dd"));
+                    string input = ReadLine("Ingrese la fecha de expiración (aaaa-MM-dd): ");
+                    DateTime expirationDate = string.IsNullOrWhiteSpace(input) ? DateTime.Now : DateTime.Parse(input);
                     product = new PerishableProduct(id, name, description, price, quantity, expirationDate);
                     break;
                 case 2:
-                    Console.Write("Ingrese la categoría del producto: ");
-                    string category = Console.ReadLine() ?? "";
+                    string category = ReadLine("Ingrese la categoría del producto: ");
                     product = new NonPerishableProduct(id, name, description, price, quantity, category);
                     break;
                 default:
@@ -170,11 +158,8 @@ namespace InventarioApp.src
         static void UpdateProductStock()
         {
             Console.WriteLine("=== Actualizar stock de un producto ===");
-            Console.Write("Ingrese el ID del producto: ");
-            string id = Console.ReadLine() ?? "";
-
-            Console.Write("Ingrese el nuevo stock disponible del producto: ");
-            int quantity = int.Parse(Console.ReadLine() ?? "0");
+            string id = ReadLine("Ingrese el ID del producto: ");
+            int quantity = ReadInt("Ingrese el nuevo stock disponible del producto: ");
 
             _inventoryService.UpdateProductStock(id, quantity);
             Console.WriteLine("\nStock actualizado exitosamente!");
@@ -183,8 +168,7 @@ namespace InventarioApp.src
         static void DeleteProduct()
         {
             Console.WriteLine("=== Eliminar producto ===");
-            Console.Write("Ingrese el ID del producto: ");
-            string id = Console.ReadLine() ?? "";
+            string id = ReadLine("Ingrese el ID del producto: ");
 
             _inventoryService.DeleteProduct(id);
             Console.WriteLine("\nProducto eliminado exitosamente!");
@@ -193,10 +177,7 @@ namespace InventarioApp.src
         static void ShowLowStockProducts()
         {
             Console.WriteLine("=== Reporte de stock bajo ===");
-            Console.Write("Ingrese el umbral de stock bajo (por defecto 5): ");
-            string input = Console.ReadLine() ?? "";
-
-            int threshold = string.IsNullOrWhiteSpace(input) ? 5 : int.Parse(input);
+            int threshold = ReadInt("Ingrese el umbral de stock bajo (por defecto 5): ", 5);
             var report = _reportService.GetLowStockProductsReport(threshold);
             Console.WriteLine(report);
         }
@@ -204,8 +185,7 @@ namespace InventarioApp.src
         static void FindProductsByName()
         {
             Console.WriteLine("=== Buscar productos por nombre ===");
-            Console.Write("Ingrese el nombre o parte del nombre del producto: ");
-            string name = Console.ReadLine() ?? "";
+            string name = ReadLine("Ingrese el nombre o parte del nombre del producto: ");
 
             var products = _inventoryService.FindProductsByName(name);
             if (!products.Any())
@@ -223,8 +203,7 @@ namespace InventarioApp.src
         static void ExportProductsToCSV()
         {
             Console.WriteLine("=== Exportar productos a CSV ===");
-            Console.Write("Ingrese la ruta del archivo CSV de salida: ");
-            string filePath = Console.ReadLine() ?? "";
+            string filePath = ReadLine("Ingrese la ruta del archivo CSV de salida: ");
 
             var products = _inventoryService.ListProducts();
             if (!products.Any())
@@ -235,6 +214,51 @@ namespace InventarioApp.src
 
             _csvExportService.ExportProducts(products, filePath);
             Console.WriteLine("\nProductos exportados exitosamente!");
+        }
+
+        static string ReadLine(string prompt, string defaultValue = "")
+        {
+            Console.Write(prompt);
+            string? input = Console.ReadLine();
+            return string.IsNullOrWhiteSpace(input) ? defaultValue : input;
+        }
+
+        static int ReadInt(string prompt, int defaultValue = 0)
+        {
+            Console.Write(prompt);
+            string? input = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return defaultValue;
+            }
+            try
+            {
+                return int.Parse(input);
+            }
+            catch
+            {
+                Console.WriteLine("Entrada inválida, se usará el valor por defecto: " + defaultValue);
+                return defaultValue;
+            }
+        }
+
+        static decimal ReadDecimal(string prompt, decimal defaultValue = 0)
+        {
+            Console.Write(prompt);
+            string? input = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return defaultValue;
+            }
+            try
+            {
+                return decimal.Parse(input);
+            }
+            catch
+            {
+                Console.WriteLine("Entrada inválida, se usará el valor por defecto: " + defaultValue);
+                return defaultValue;
+            }
         }
     }
 }
