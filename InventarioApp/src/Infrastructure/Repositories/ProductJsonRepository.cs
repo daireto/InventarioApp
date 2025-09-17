@@ -7,8 +7,10 @@ namespace InventarioApp.src.Infrastructure.Repositories
     public class ProductJsonRepository<T> : IRepository<T> where T : Product
     {
         private readonly string _filePath;
-        private List<T> _items;
+        private readonly List<T> _items;
         private JsonSerializerOptions _jsonSerializerOptions;
+
+        public IReadOnlyCollection<T> Items => _items.AsReadOnly();
 
         public ProductJsonRepository(string filePath)
         {
@@ -102,7 +104,7 @@ namespace InventarioApp.src.Infrastructure.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return _items.ToList();
+            return Items;
         }
     }
 }

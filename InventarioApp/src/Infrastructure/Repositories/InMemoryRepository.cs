@@ -7,6 +7,8 @@ namespace InventarioApp.src.Infrastructure.Repositories
     {
         private List<T> _items;
 
+        public IReadOnlyCollection<T> Items => _items.AsReadOnly();
+
         public InMemoryRepository()
         {
             _items = [];
@@ -59,7 +61,7 @@ namespace InventarioApp.src.Infrastructure.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return _items.ToList();
+            return Items;
         }
     }
 }
