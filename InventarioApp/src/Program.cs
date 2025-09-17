@@ -109,7 +109,12 @@ namespace InventarioApp.src
             Console.WriteLine("1. Perecedero (por defecto)");
             Console.WriteLine("2. No perecedero");
             int typeChoice = ReadInt("Ingrese la opción (1 o 2): ", 1);
-            
+            if (typeChoice != 1 && typeChoice != 2)
+            {
+                Console.WriteLine("\nOpción inválida, debe seleccionar 1 o 2");
+                return;
+            }
+
             string id = ReadLine("Ingrese el ID del producto: ");
             string name = ReadLine("Ingrese el nombre del producto: ");
             string description = ReadLine("Ingrese la descripción del producto: ");
