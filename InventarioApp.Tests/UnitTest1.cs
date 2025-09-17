@@ -15,7 +15,8 @@ public class UnitTest1
         // Arrange
         var inventoryService = new InventoryService(_repository);
         // Act
-        var product = new PerishableProduct("1", "Leche", "Leche Colanta", 3500, 100, new DateTime(2025, 9, 15));
+        var tomorrow = DateTime.Now.AddDays(1);
+        var product = new PerishableProduct("1", "Leche", "Leche Colanta", 3500, 100, tomorrow);
         inventoryService.AddProduct(product);
         // Assert
         var allProducts = inventoryService.ListProducts();
@@ -27,7 +28,8 @@ public class UnitTest1
     {
         // Arrange
         var inventoryService = new InventoryService(_repository);
-        var product = new PerishableProduct("2", "Yogurt", "Yogurt Griego", 2500, 50, new DateTime(2025, 10, 1));
+        var tomorrow = DateTime.Now.AddDays(1);
+        var product = new PerishableProduct("2", "Yogurt", "Yogurt Griego", 2500, 50, tomorrow);
         inventoryService.AddProduct(product);
         // Act
         inventoryService.UpdateProduct("2", "Yogurt Natural", "Yogurt Natural Sin Azúcar", 2700);
@@ -44,7 +46,8 @@ public class UnitTest1
     {
         // Arrange
         var inventoryService = new InventoryService(_repository);
-        var product = new PerishableProduct("3", "Queso", "Queso Cheddar", 15000, 20, new DateTime(2025, 9, 25));
+        var tomorrow = DateTime.Now.AddDays(1);
+        var product = new PerishableProduct("3", "Queso", "Queso Cheddar", 15000, 20, tomorrow);
         inventoryService.AddProduct(product);
         // Act
         inventoryService.DeleteProduct("3");
@@ -59,7 +62,8 @@ public class UnitTest1
         // Arrange
         var inventoryService = new InventoryService(_repository);
         var reportService = new ReportService(_repository);
-        var product1 = new PerishableProduct("6", "Mantequilla", "Mantequilla Salada", 8000, 3, new DateTime(2025, 11, 15));
+        var tomorrow = DateTime.Now.AddDays(1);
+        var product1 = new PerishableProduct("6", "Mantequilla", "Mantequilla Salada", 8000, 3, tomorrow);
         var product2 = new NonPerishableProduct("7", "Detergente", "Detergente Líquido", 12000, 10, "Aseo");
         inventoryService.AddProduct(product1);
         inventoryService.AddProduct(product2);
@@ -75,7 +79,8 @@ public class UnitTest1
     {
         // Arrange
         var inventoryService = new InventoryService(_repository);
-        var product1 = new PerishableProduct("4", "Pan", "Pan Integral", 5000, 30, new DateTime(2025, 9, 19));
+        var tomorrow = DateTime.Now.AddDays(1);
+        var product1 = new PerishableProduct("4", "Pan", "Pan Integral", 5000, 30, tomorrow);
         var product2 = new NonPerishableProduct("5", "Panela", "Panela Orgánica", 6000, 15, "Alimentos");
         inventoryService.AddProduct(product1);
         inventoryService.AddProduct(product2);
